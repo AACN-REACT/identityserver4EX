@@ -22,6 +22,9 @@ module.exports = {
         ]
       },
       watch:true,
+      watchOptions: {
+        aggregateTimeout: 200
+      },
       plugins: [
         new WebpackShellPlugin({onBuildStart:['echo "Webpack Start"'], onBuildEnd:['nodemon resource/resource.js --watch resource --watch client']})
       ]
