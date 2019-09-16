@@ -7,11 +7,11 @@ import Oidc, { OidcClient } from 'oidc-client'
 // this is the config  object 
 var config = {
     authority: "https://localhost:5001/",
-    client_id: "js",
-    redirect_uri: "http://localhost:3000/callback.html",
-    response_type: "code",
+    client_id: "react",
+    redirect_uri: "http://localhost:3000/callback",
+    response_type: "id_token",
     scope:"openid profile api1",
-    post_logout_redirect_uri : "http://localhost:5003/index.html",
+    post_logout_redirect_uri : "http://localhost:3000/index.html",
 };
 
 //
@@ -45,7 +45,7 @@ function login(mgr) {
 
 function api(mgr) {
     mgr.getUser().then(function (user) {
-        var url = "https://demo.identityserver.io/.well-known/openid-configuration";
+        var url = "https://localhost:5001";
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
@@ -74,19 +74,20 @@ function logout(mgr) {
 function App({mgr, login, api, logout}){
 
     const [user, setUser] = React.useState(null);
+    const [errmsg,setErrmsg] =React.useState("no error")
  
  React.useEffect(()=>{
 
-mgr.getUser().then(logged=>logged?setUser(s=>logged):setUser(s=>"no user"))
+mgr.getUser().then(logged=>logged?setUser(s=>logged):setUser(s=>"no user")).catch(err=>setErrmsg(log(err)))
 
     },[mgr])
     console.log(user+"<<<--")
 
     return (
             <>
-            <h1>Hello</h1>
+            <h1>Hello User</h1>
             <FormData mgr={mgr} getLogin={login} getAPI={api} getLogout={logout} />
-            <Results />
+            <Results err={errmsg}/>
             </>
 
     )
